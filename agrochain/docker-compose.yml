@@ -96,6 +96,24 @@ services:
       - ./backend:/app:ro # Live reload mapping
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
+  # AgroChain React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: agrochain-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    networks:
+      - agrochain-net
+    volumes:
+      - ./frontend:/app:ro # Live reload mapping
+      - /app/node_modules # Prevents local node_modules from overwriting container's
+
 volumes:
   mongo-data:
   postgres-data:
