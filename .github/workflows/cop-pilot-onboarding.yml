@@ -1,0 +1,34 @@
+name: COP-PILOT Onboarding (GitOps)
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docker Image
+        run: docker build -t agrochain-ukraine-repo:v1.0.0 ./agrochain/backend
+
+      - name: Push to Registry
+        run: |
+          # Normally this pushes to a Docker registry accessible by COP-PILOT Kubernetes
+          # docker push agrochain-ukraine-repo:v1.0.0
+          echo "Simulated push to cop-pilot registry for v1.0.0"
+
+  notify_cop_pilot:
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify OpenSlice (OSL) for TMF Catalog Update
+        run: |
+          echo "Triggering API call to COP-PILOT Service Catalog..."
+          # Example curl to TMF633 API to register the service specification:
+          # curl -X POST "https://osl.cop-pilot.eu/tmf-api/serviceCatalogManagement/v4/serviceSpecification" \
+          #   -H "Content-Type: application/json" \
+          #   -d @agrochain/cop-pilot-onboarding/tmf633_service_spec.json
+          echo "AgroChain service specification registered successfully."

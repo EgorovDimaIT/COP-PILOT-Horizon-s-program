@@ -1,0 +1,29 @@
+# Default values for agrochain-ukraine.
+replicaCount: 2
+
+image:
+  repository: agrochain-ukraine-repo
+  pullPolicy: IfNotPresent
+  tag: "v1.0.0"
+
+service:
+  type: ClusterIP
+  port: 8080
+
+# Integration with Secure Integration Fabric (SIF) of COP-PILOT
+sif_integration:
+  enabled: true
+  openziti_identity: "agrochain-service-id"
+
+# NGSI-LD settings
+ngsi_ld:
+  orion_url: "http://orion-ld:1026"
+  tenant: "agrochain"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi

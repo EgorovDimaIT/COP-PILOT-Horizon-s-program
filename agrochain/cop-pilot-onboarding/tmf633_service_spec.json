@@ -1,0 +1,51 @@
+{
+  "name": "AgroChainUkraineVerification",
+  "description": "Verifies grain quality via UKAS and customs cross via eCherha. Integrated with FIWARE Orion-LD and Solana verification. This service specification exposes AgroChain lots for COP-PILOT LLM-led discovery.",
+  "lifecycleStatus": "Active",
+  "version": "1.0",
+  "isBundle": false,
+  "category": [
+    {
+      "name": "Agriculture",
+      "version": "1.0"
+    },
+    {
+      "name": "Logistics and Verification",
+      "version": "1.0"
+    }
+  ],
+  "serviceSpecCharacteristic": [
+    {
+      "name": "TargetClass",
+      "description": "Grade of wheat (1, 2, 3)",
+      "valueType": "String",
+      "configurable": true,
+      "minCardinality": 1,
+      "maxCardinality": 1
+    },
+    {
+      "name": "MinProtein",
+      "description": "Minimum protein percentage",
+      "valueType": "Float",
+      "configurable": true,
+      "minCardinality": 0,
+      "maxCardinality": 1
+    },
+    {
+      "name": "CropType",
+      "description": "Type of crop, e.g. Wheat, Corn, Sunflower",
+      "valueType": "String",
+      "configurable": true,
+      "minCardinality": 1,
+      "maxCardinality": 1
+    },
+    {
+      "name": "Region",
+      "description": "Region of cultivation in Ukraine",
+      "valueType": "String",
+      "configurable": true,
+      "minCardinality": 0,
+      "maxCardinality": 1
+    }
+  ]
+}

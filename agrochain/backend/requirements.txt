@@ -1,0 +1,14 @@
+fastapi==0.104.1
+uvicorn==0.24.0.post1
+pydantic==2.4.2
+pydantic-settings==2.0.3
+httpx==0.25.1
+cryptography==41.0.5
+asn1crypto==1.5.1
+playwright==1.39.0
+asyncio-mqtt==0.16.2
+anchorpy==0.18.0
+solana==0.30.2
+solders==0.18.1
+aiofiles==23.2.1
+python-multipart==0.0.6

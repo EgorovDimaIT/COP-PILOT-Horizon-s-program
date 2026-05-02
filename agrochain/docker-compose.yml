@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  # NGSI-LD Context Broker (FIWARE Orion-LD)
+  orion-ld:
+    image: fiware/orion-ld:1.4.0
+    hostname: orion-ld
+    container_name: fiware-orion-ld
+    depends_on:
+      - mongo-db
+    networks:
+      - agrochain-net
+    ports:
+      - "1026:1026"
+    command: -dbhost mongo-db -logLevel DEBUG -troe
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1026/version"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+  # MongoDB (Required for Orion-LD)
+  mongo-db:
+    image: mongo:4.4
+    hostname: mongo-db
+    container_name: db-mongo
+    networks:
+      - agrochain-net
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    command: --nojournal
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+  # PostgreSQL (For FastAPI Backend)
+  postgres:
+    image: postgres:15-alpine
+    container_name: agrochain-postgres
+    environment:
+      POSTGRES_USER: agrochain
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: agrochain
+    ports:
+      - "5432:5432"
+    networks:
+      - agrochain-net
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agrochain"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MQTT Broker (For GPS updates)
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: agrochain-mqtt
+    ports:
+      - "1883:1883"
+      - "8883:8883" # TLS (requires certs in production)
+      - "9001:9001" # WebSockets
+    networks:
+      - agrochain-net
+    volumes:
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-logs:/mosquitto/log
+    # Create simple custom config via command for dev
+    command: sh -c "echo 'listener 1883\nallow_anonymous true\nlistener 9001\nprotocol websockets' > /mosquitto/config/mosquitto.conf && /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf"
+
+  # AgroChain FastAPI Backend
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: agrochain-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - orion-ld
+      - mosquitto
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://agrochain:password@postgres/agrochain
+      - MQTT_BROKER_HOST=mosquitto
+      - MQTT_BROKER_PORT=1883
+      - NGSI_LD_BROKER=http://orion-ld:1026
+    networks:
+      - agrochain-net
+    volumes:
+      - ./backend:/app:ro # Live reload mapping
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  mongo-data:
+  postgres-data:
+  mosquitto-data:
+  mosquitto-logs:
+
+networks:
+  agrochain-net:
+    driver: bridge
