@@ -1,8 +1,8 @@
 {
   "name": "AgroChainUkraineVerification",
-  "description": "Verifies grain quality via UKAS and customs cross via eCherha. Integrated with FIWARE Orion-LD and Solana verification. This service specification exposes AgroChain lots for COP-PILOT LLM-led discovery.",
+  "description": "End-to-end grain traceability, verification, and hybrid escrow payment service. Validates Ukrainian grain exports via UKAS labs, Derzhgeocadastre, SSUFSCP phytosanitary, and eCherha customs. Supports USDC (Solana L1) and EUR/USD (bank-partner) escrow payments triggered by border crossing confirmation.",
   "lifecycleStatus": "Active",
-  "version": "1.0",
+  "version": "2.0",
   "isBundle": false,
   "category": [
     {
@@ -12,9 +12,21 @@
     {
       "name": "Logistics and Verification",
       "version": "1.0"
+    },
+    {
+      "name": "Payments and Escrow",
+      "version": "1.0"
     }
   ],
   "serviceSpecCharacteristic": [
+    {
+      "name": "CropType",
+      "description": "Type of crop: Wheat, Corn, Sunflower, Barley",
+      "valueType": "String",
+      "configurable": true,
+      "minCardinality": 1,
+      "maxCardinality": 1
+    },
     {
       "name": "TargetClass",
       "description": "Grade of wheat (1, 2, 3)",
@@ -32,20 +44,78 @@
       "maxCardinality": 1
     },
     {
-      "name": "CropType",
-      "description": "Type of crop, e.g. Wheat, Corn, Sunflower",
-      "valueType": "String",
-      "configurable": true,
-      "minCardinality": 1,
-      "maxCardinality": 1
-    },
-    {
       "name": "Region",
       "description": "Region of cultivation in Ukraine",
       "valueType": "String",
       "configurable": true,
       "minCardinality": 0,
       "maxCardinality": 1
+    },
+    {
+      "name": "PaymentMethod",
+      "description": "Escrow payment method: usdc_solana, fiat_eur, fiat_usd, hybrid",
+      "valueType": "String",
+      "configurable": true,
+      "minCardinality": 1,
+      "maxCardinality": 1,
+      "serviceSpecCharacteristicValue": [
+        {
+          "value": "usdc_solana",
+          "isDefault": false
+        },
+        {
+          "value": "fiat_eur",
+          "isDefault": true
+        },
+        {
+          "value": "fiat_usd",
+          "isDefault": false
+        },
+        {
+          "value": "hybrid",
+          "isDefault": false
+        }
+      ]
+    },
+    {
+      "name": "PartnerBank",
+      "description": "EU/UA Banking partner for fiat escrow: credit_agricole, deutsche_bank, raiffeisen, revolut_business",
+      "valueType": "String",
+      "configurable": true,
+      "minCardinality": 0,
+      "maxCardinality": 1
+    },
+    {
+      "name": "CryptoSharePercent",
+      "description": "Percentage of total amount paid in USDC (for hybrid payments, 0-100)",
+      "valueType": "Float",
+      "configurable": true,
+      "minCardinality": 0,
+      "maxCardinality": 1
+    }
+  ],
+  "resourceSpecification": [
+    {
+      "name": "SolanaSmartContract",
+      "description": "TradeEscrow Anchor program (USDC vault with auto-release on BORDER_CROSSED)"
+    },
+    {
+      "name": "PaymentOracle",
+      "description": "Microservice bridging eCherha customs data to Solana and EU Bank APIs (TMF 676)"
+    },
+    {
+      "name": "NGSILDTranslator",
+      "description": "Translates GrainLot data to ETSI NGSI-LD for COP-PILOT Context Broker"
+    }
+  ],
+  "relatedParty": [
+    {
+      "role": "ServiceProvider",
+      "name": "AgroChain Ukraine SME"
+    },
+    {
+      "role": "PlatformProvider",
+      "name": "COP-PILOT Consortium"
     }
   ]
 }

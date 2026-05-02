@@ -420,7 +420,7 @@ async def handle_border_crossing(lot_id: str, echerha_status: dict):
     
     logger.info(f"🎉 BORDER CROSSED: Лот {lot_id}, хэш: {echerha_confirmation.hex()}")
     
-    # Обновляем Solana
+    # Обновляем Solana и банковский Fiat Escrow
     solana = SolanaService()
     try:
         await solana.confirm_border_crossing(
@@ -434,17 +434,27 @@ async def handle_border_crossing(lot_id: str, echerha_status: dict):
             checkpoint_id=echerha_status.get("checkpoint_id", 1),
         )
         
-        # Триггерим релиз эскроу
+        # Crypto Release (USDC)
         if lot.solana_tx_escrow:
             await solana.release_escrow_payment(
                 lot_id=lot_id,
                 echerha_confirmation=echerha_confirmation,
             )
             lot.status = LotStatus.PAYMENT_RELEASED
-            logger.info(f"💰 PAYMENT RELEASED: Лот {lot_id}")
+            logger.info(f"💰 USDC CRYPTO ESCROW RELEASED: Лот {lot_id}")
+            
+        # Fiat Release (EUR, TMF 676)
+        # Import moved to top implicitly or directly here
+        from app.services.fiat_escrow_service import FiatEscrowService
+        fiat = FiatEscrowService()
+        await fiat.release_fiat_payment(lot_id=lot_id, echerha_confirmation=echerha_confirmation)
+        logger.info(f"💶 FIAT ESCROW RELEASED via TMF 676: Лот {lot_id}")
+        
+        if not lot.solana_tx_escrow:
+            lot.status = LotStatus.PAYMENT_RELEASED
             
     except Exception as e:
-        logger.error(f"Помилка Solana при crossing: {e}")
+        logger.error(f"Помилка Payment Release при crossing: {e}")
     
     # Обновляем NGSI-LD
     translator = NGSILDTranslator()
