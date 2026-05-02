@@ -11,19 +11,45 @@ service:
   port: 8080
 
 # Integration with Secure Integration Fabric (SIF) of COP-PILOT
+# Essential for secure cross-border TMF 622/676 banking and data transfers
 sif_integration:
   enabled: true
-  openziti_identity: "agrochain-service-id"
+  openziti_identity: "agrochain-sif-identity"
+  controller_url: "https://sif-controller.cop-pilot.eu:1280"
 
-# NGSI-LD settings
+# NGSI-LD & Smart Data Models configuration
 ngsi_ld:
   orion_url: "http://orion-ld:1026"
   tenant: "agrochain"
+  context_url: "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+
+# Hybrid Payment Oracle Configuration
+payment_oracle:
+  enabled: true
+  fiat_supported: true
+  crypto_supported: true
+  default_fiat_bank: "deutsche_bank"
+  # TMF APIs for Escrow & Orders (SIF-protected internal endpoints)
+  tmf622_endpoint: "http://osl.cop-pilot.internal/tmf-api/productOrderingManagement/v4"
+  tmf676_endpoint: "http://partner-banks.cop-pilot.internal/tmf-api/paymentManagement/v4"
+
+# Blockchain settings
+solana:
+  network: "devnet"
+  rpc_url: "https://api.devnet.solana.com"
+  escrow_program_id: "EscrowXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  registry_program_id: "GrainXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
 resources:
   limits:
-    cpu: 500m
-    memory: 512Mi
+    cpu: "500m"
+    memory: "512Mi"
   requests:
-    cpu: 250m
-    memory: 256Mi
+    cpu: "250m"
+    memory: "256Mi"
+
+# API environment variables injected into the container
+env:
+  ECHERHA_API_URL: "https://api.echerha.customs.gov.ua"
+  SSUFSCP_API_URL: "https://api.consumer.gov.ua"
+  LOG_LEVEL: "INFO"
