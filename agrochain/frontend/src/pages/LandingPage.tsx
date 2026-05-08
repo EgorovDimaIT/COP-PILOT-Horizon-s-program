@@ -45,7 +45,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onRegister })
             <section className="landing-hero">
                 <div className="landing-hero-bg">
                     <img src="/hero-bg.png" alt="" className="hero-bg-img" />
-                    <div className="hero-dark-overlay" />
                 </div>
                 <div className="landing-hero-content">
                     <div className="landing-hero-text">

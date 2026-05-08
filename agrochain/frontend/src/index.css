@@ -3016,16 +3016,16 @@ img {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  opacity: 0.55;
+  opacity: 0.95;
 }
 
 .hero-dark-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg,
-      rgba(10, 32, 16, 0.88) 0%,
-      rgba(10, 32, 16, 0.6) 45%,
-      rgba(10, 32, 16, 0.4) 100%);
+      rgba(10, 32, 16, 0.55) 0%,
+      rgba(10, 32, 16, 0.25) 45%,
+      rgba(10, 32, 16, 0.1) 100%);
 }
 
 .landing-hero-content {
