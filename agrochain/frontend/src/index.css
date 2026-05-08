@@ -3006,16 +3006,26 @@ img {
 .landing-hero-bg {
   position: absolute;
   inset: 0;
-  background-image:
-    radial-gradient(ellipse at 70% 30%, rgba(46, 125, 50, 0.25) 0%, transparent 60%),
-    radial-gradient(ellipse at 20% 80%, rgba(26, 122, 58, 0.15) 0%, transparent 50%);
   pointer-events: none;
 }
 
-.hero-grain-overlay {
+.hero-bg-img {
   position: absolute;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.55;
+}
+
+.hero-dark-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+      rgba(10, 32, 16, 0.88) 0%,
+      rgba(10, 32, 16, 0.6) 45%,
+      rgba(10, 32, 16, 0.4) 100%);
 }
 
 .landing-hero-content {
@@ -3406,15 +3416,33 @@ img {
 .landing-ftf-section {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #0a1505 0%, #0f2a10 100%);
+  background: #050e07;
   text-align: center;
 }
 
 .landing-ftf-bg {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, rgba(46, 125, 50, 0.2) 0%, transparent 70%);
   pointer-events: none;
+}
+
+.ftf-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.35;
+}
+
+.ftf-dark-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+      rgba(5, 14, 7, 0.7) 0%,
+      rgba(5, 14, 7, 0.55) 40%,
+      rgba(5, 14, 7, 0.75) 100%);
 }
 
 .landing-ftf-content {

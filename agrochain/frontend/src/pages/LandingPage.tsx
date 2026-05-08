@@ -44,7 +44,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onRegister })
             {/* HERO */}
             <section className="landing-hero">
                 <div className="landing-hero-bg">
-                    <div className="hero-grain-overlay" />
+                    <img src="/hero-bg.png" alt="" className="hero-bg-img" />
+                    <div className="hero-dark-overlay" />
                 </div>
                 <div className="landing-hero-content">
                     <div className="landing-hero-text">
@@ -184,7 +185,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onRegister })
 
             {/* FARM TO FORK */}
             <section className="landing-ftf-section">
-                <div className="landing-ftf-bg" />
+                <div className="landing-ftf-bg">
+                    <img src="/ftf-bg.png" alt="" className="ftf-bg-img" />
+                    <div className="ftf-dark-overlay" />
+                </div>
                 <div className="landing-ftf-content">
                     <div className="ftf-eu-tag">{t('Згідно з програмою ЄС', 'According to EU program')}</div>
                     <h2 className="ftf-title">FROM FARM TO FORK</h2>
