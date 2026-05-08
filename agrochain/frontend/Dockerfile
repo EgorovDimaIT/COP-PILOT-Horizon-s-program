@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-ENV VITE_API_URL=https://agrochain-ukraine.org/api
+ENV VITE_API_URL=https://agrochain-ukraine.org
 RUN npm run build
 
 FROM nginx:alpine

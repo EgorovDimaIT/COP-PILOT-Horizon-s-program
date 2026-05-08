@@ -32,7 +32,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_URL=https://agrochain-ukraine.org/api
+        - VITE_API_URL=https://agrochain-ukraine.org
     container_name: agrochain-frontend
     restart: unless-stopped
     ports:
