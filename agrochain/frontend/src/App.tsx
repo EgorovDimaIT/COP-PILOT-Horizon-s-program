@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { TopBar } from './components/TopBar';
 import { BuyerDashboard } from './pages/BuyerDashboard';
 import { LotModal, NotificationPanel } from './components/Modals';
 import { I18nProvider, useI18n } from './i18n';
 import { AppProvider, useApp } from './store';
+import { AuthPage } from './pages/AuthPage';
 
 import { FarmerDashboard } from './pages/FarmerDashboard';
 
@@ -62,12 +63,35 @@ const AppInner: React.FC = () => {
   );
 };
 
-const App: React.FC = () => (
-  <I18nProvider>
-    <AppProvider>
-      <AppInner />
-    </AppProvider>
-  </I18nProvider>
-);
+const App: React.FC = () => {
+  // Check if user is authenticated (token in localStorage)
+  const [isAuth, setIsAuth] = useState(() => {
+    return !!localStorage.getItem('auth_token');
+  });
+  const [initialRole, setInitialRole] = useState<'farmer' | 'buyer'>(() => {
+    return (localStorage.getItem('user_role') as 'farmer' | 'buyer') || 'farmer';
+  });
+
+  const handleAuth = (role: 'farmer' | 'buyer') => {
+    setInitialRole(role);
+    setIsAuth(true);
+  };
+
+  if (!isAuth) {
+    return (
+      <I18nProvider>
+        <AuthPage onAuth={handleAuth} />
+      </I18nProvider>
+    );
+  }
+
+  return (
+    <I18nProvider>
+      <AppProvider initialMode={initialRole}>
+        <AppInner />
+      </AppProvider>
+    </I18nProvider>
+  );
+};
 
 export default App;

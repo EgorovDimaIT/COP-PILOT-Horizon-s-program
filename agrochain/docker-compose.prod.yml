@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # AgroChain FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: agrochain-backend
+    restart: unless-stopped
+    ports:
+      - "8010:8000"   # Свободный порт (8000 и 8090 уже заняты)
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://agrochain:agrochain2026@postgres/agrochain
+      - MQTT_BROKER_HOST=mosquitto
+      - MQTT_BROKER_PORT=1883
+      - NGSI_LD_BROKER=http://orion-ld:1026
+      - SECRET_KEY=${SECRET_KEY:-agrochain-change-in-production-2026}
+      - ENVIRONMENT=production
+      - SOLANA_RPC_URL=https://api.devnet.solana.com
+    networks:
+      - agrochain-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # AgroChain React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=https://agrochain-ukraine.org/api
+    container_name: agrochain-frontend
+    restart: unless-stopped
+    ports:
+      - "3001:80"    # Свободный порт (3000 уже занят kievdating)
+    depends_on:
+      - backend
+    networks:
+      - agrochain-net
+
+  # PostgreSQL for AgroChain (separate from existing postgres on 5432)
+  postgres:
+    image: postgres:15-alpine
+    container_name: agrochain-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: agrochain
+      POSTGRES_PASSWORD: agrochain2026
+      POSTGRES_DB: agrochain
+    ports:
+      - "5434:5432"   # 5432 и 5433 уже заняты
+    volumes:
+      - agrochain-postgres-data:/var/lib/postgresql/data
+    networks:
+      - agrochain-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agrochain"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  agrochain-postgres-data:
+
+networks:
+  agrochain-net:
+    driver: bridge

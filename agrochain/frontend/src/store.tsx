@@ -44,10 +44,11 @@ const defaultNotifs = [
 
 const AppContext = createContext<AppState>({} as AppState);
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [mode, setMode] = useState<Mode>('farmer');
+export const AppProvider: React.FC<{ children: React.ReactNode; initialMode?: Mode }> = ({ children, initialMode = 'farmer' }) => {
+    const [mode, setMode] = useState<Mode>(initialMode);
     const [page, setPage] = useState<Page>('dashboard');
     const [farmerPage, setFarmerPage] = useState<FarmerPage>('panel');
+
     const [favorites, setFavorites] = useState<Set<string>>(new Set());
     const [notifications, setNotifications] = useState(defaultNotifs);
     const [showNotifPanel, setShowNotifPanel] = useState(false);
