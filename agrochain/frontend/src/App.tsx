@@ -6,8 +6,10 @@ import { LotModal, NotificationPanel } from './components/Modals';
 import { I18nProvider, useI18n } from './i18n';
 import { AppProvider, useApp } from './store';
 import { AuthPage } from './pages/AuthPage';
-
+import { LandingPage } from './pages/LandingPage';
 import { FarmerDashboard } from './pages/FarmerDashboard';
+
+type AppScreen = 'landing' | 'auth' | 'app';
 
 const PageContent: React.FC = () => {
   const { mode, page, farmerPage } = useApp();
@@ -30,7 +32,6 @@ const PageContent: React.FC = () => {
     }
   }
 
-  // Buyer matching
   switch (page) {
     case 'dashboard': return <BuyerDashboard />;
     default:
@@ -64,23 +65,38 @@ const AppInner: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  // Check if user is authenticated (token in localStorage)
-  const [isAuth, setIsAuth] = useState(() => {
-    return !!localStorage.getItem('auth_token');
-  });
-  const [initialRole, setInitialRole] = useState<'farmer' | 'buyer'>(() => {
-    return (localStorage.getItem('user_role') as 'farmer' | 'buyer') || 'farmer';
-  });
+  const hasToken = !!localStorage.getItem('auth_token');
+
+  const [screen, setScreen] = useState<AppScreen>(hasToken ? 'app' : 'landing');
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [initialRole, setInitialRole] = useState<'farmer' | 'buyer'>(
+    (localStorage.getItem('user_role') as 'farmer' | 'buyer') || 'farmer'
+  );
+
+  const goToLogin = () => { setAuthMode('login'); setScreen('auth'); };
+  const goToRegister = () => { setAuthMode('register'); setScreen('auth'); };
 
   const handleAuth = (role: 'farmer' | 'buyer') => {
     setInitialRole(role);
-    setIsAuth(true);
+    setScreen('app');
   };
 
-  if (!isAuth) {
+  if (screen === 'landing') {
     return (
       <I18nProvider>
-        <AuthPage onAuth={handleAuth} />
+        <LandingPage onLogin={goToLogin} onRegister={goToRegister} />
+      </I18nProvider>
+    );
+  }
+
+  if (screen === 'auth') {
+    return (
+      <I18nProvider>
+        <AuthPage
+          onAuth={handleAuth}
+          initialMode={authMode}
+          onBack={() => setScreen('landing')}
+        />
       </I18nProvider>
     );
   }

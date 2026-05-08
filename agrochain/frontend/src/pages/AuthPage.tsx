@@ -23,9 +23,15 @@ interface LoginForm {
   remember: boolean;
 }
 
-export const AuthPage: React.FC<{ onAuth: (role: 'farmer' | 'buyer') => void }> = ({ onAuth }) => {
+const API_BASE = import.meta.env.VITE_API_URL || window.location.origin;
+
+export const AuthPage: React.FC<{
+  onAuth: (role: 'farmer' | 'buyer') => void;
+  initialMode?: 'login' | 'register';
+  onBack?: () => void;
+}> = ({ onAuth, initialMode = 'login', onBack }) => {
   const { lang, setLang } = useI18n() as any;
-  const [mode, setMode] = useState<AuthMode>('login');
+  const [mode, setMode] = useState<AuthMode>(initialMode);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -50,7 +56,7 @@ export const AuthPage: React.FC<{ onAuth: (role: 'farmer' | 'buyer') => void }> 
     setError('');
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/auth/login`, {
+      const res = await fetch(`${API_BASE}/api/v1/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: loginForm.email, password: loginForm.password }),
@@ -84,7 +90,7 @@ export const AuthPage: React.FC<{ onAuth: (role: 'farmer' | 'buyer') => void }> 
     }
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/auth/register`, {
+      const res = await fetch(`${API_BASE}/api/v1/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(regForm),
@@ -139,10 +145,15 @@ export const AuthPage: React.FC<{ onAuth: (role: 'farmer' | 'buyer') => void }> 
 
       <div className="auth-right">
         <div className="auth-card">
-          {/* Language switcher */}
-          <div className="auth-lang">
-            <button className={`lang-btn ${lang === 'ua' ? 'active' : ''}`} onClick={() => setLang?.('ua')}>UA</button>
-            <button className={`lang-btn ${lang === 'en' ? 'active' : ''}`} onClick={() => setLang?.('en')}>EN</button>
+          {/* Back + Language switcher */}
+          <div className="auth-top-row">
+            {onBack && (
+              <button className="auth-back-btn" onClick={onBack}>← {lang === 'ua' ? 'Назад' : 'Back'}</button>
+            )}
+            <div className="auth-lang">
+              <button className={`lang-btn ${lang === 'ua' ? 'active' : ''}`} onClick={() => setLang?.('ua')}>UA</button>
+              <button className={`lang-btn ${lang === 'en' ? 'active' : ''}`} onClick={() => setLang?.('en')}>EN</button>
+            </div>
           </div>
 
           {/* Tab switcher */}
@@ -376,9 +387,9 @@ export const AuthPage: React.FC<{ onAuth: (role: 'farmer' | 'buyer') => void }> 
                   <div className="pwd-bar">
                     {[...Array(4)].map((_, i) => (
                       <div key={i} className={`pwd-seg ${regForm.password.length > i * 3 + 4 ? (
-                          regForm.password.length >= 12 ? 'strong' :
-                            regForm.password.length >= 8 ? 'medium' : 'weak'
-                        ) : ''
+                        regForm.password.length >= 12 ? 'strong' :
+                          regForm.password.length >= 8 ? 'medium' : 'weak'
+                      ) : ''
                         }`} />
                     ))}
                   </div>
