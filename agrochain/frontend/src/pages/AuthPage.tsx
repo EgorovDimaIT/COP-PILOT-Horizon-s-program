@@ -24,7 +24,7 @@ interface LoginForm {
 }
 
 export const AuthPage: React.FC<{ onAuth: (role: 'farmer' | 'buyer') => void }> = ({ onAuth }) => {
-  const { t, lang, setLang } = useI18n() as any;
+  const { lang, setLang } = useI18n() as any;
   const [mode, setMode] = useState<AuthMode>('login');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -375,17 +375,16 @@ export const AuthPage: React.FC<{ onAuth: (role: 'farmer' | 'buyer') => void }> 
                 <div className="auth-pwd-strength">
                   <div className="pwd-bar">
                     {[...Array(4)].map((_, i) => (
-                      <div key={i} className={`pwd-seg ${
-                        regForm.password.length > i * 3 + 4 ? (
+                      <div key={i} className={`pwd-seg ${regForm.password.length > i * 3 + 4 ? (
                           regForm.password.length >= 12 ? 'strong' :
-                          regForm.password.length >= 8 ? 'medium' : 'weak'
+                            regForm.password.length >= 8 ? 'medium' : 'weak'
                         ) : ''
-                      }`} />
+                        }`} />
                     ))}
                   </div>
                   <span className="pwd-label">{
                     regForm.password.length < 8 ? '🔴 Слабкий' :
-                    regForm.password.length < 12 ? '🟡 Середній' : '🟢 Надійний'
+                      regForm.password.length < 12 ? '🟡 Середній' : '🟢 Надійний'
                   }</span>
                 </div>
               )}
