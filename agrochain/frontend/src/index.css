@@ -3034,10 +3034,6 @@ img {
   max-width: 1280px;
   margin: 0 auto;
   padding: 80px 32px;
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 80px;
-  align-items: center;
   width: 100%;
 }
 
@@ -3048,6 +3044,7 @@ img {
   letter-spacing: -0.02em;
   margin: 0 0 24px;
   color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7), 0 0 40px rgba(0, 0, 0, 0.4);
 }
 
 .hero-green {
@@ -3055,11 +3052,12 @@ img {
 }
 
 .landing-hero-desc {
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 1.05rem;
   line-height: 1.7;
   margin: 0 0 32px;
-  max-width: 540px;
+  max-width: 640px;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
 }
 
 .landing-hero-features {
@@ -3093,6 +3091,7 @@ img {
   font-size: 0.95rem;
   font-weight: 700;
   color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
 .landing-hero-features li span {

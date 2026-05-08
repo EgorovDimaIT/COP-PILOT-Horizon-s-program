@@ -87,36 +87,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onRegister })
                             <button className="landing-cta-outline" onClick={onLogin}>{t('Вже маєте акаунт? Увійти', 'Have account? Sign In')}</button>
                         </div>
                     </div>
-
-                    <div className="landing-hero-card">
-                        <div className="grain-lot-card">
-                            <div className="grain-lot-header">
-                                <span className="grain-lot-badge">Grain Lot #AG-240873</span>
-                            </div>
-                            <div className="grain-lot-steps">
-                                {[
-                                    { icon: '✅', label: 'Farm Origin', sub: 'GPS Verified' },
-                                    { icon: '✅', label: 'Lab Test', sub: 'Passed' },
-                                    { icon: '✅', label: 'Phytosanitary', sub: 'Approved' },
-                                    { icon: '✅', label: 'Border Crossing', sub: 'Completed' },
-                                    { icon: '✅', label: 'EU Customs', sub: 'Arrived' },
-                                ].map((s, i) => (
-                                    <div key={i} className="grain-step">
-                                        <span className="grain-step-icon">{s.icon}</span>
-                                        <div>
-                                            <div className="grain-step-label">{s.label}</div>
-                                            <div className="grain-step-sub">{s.sub}</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="grain-lot-status">
-                                <span className="grain-status-dot" />
-                                <strong>BORDER_CROSSED</strong>
-                                <span>Payment Released</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
